@@ -41,8 +41,8 @@
     "rules": {
       "no-unused-vars": "off",
       "semi": [
-        "error",
-        "always"
+        "off",
+        "never"
       ],
       "space-before-function-paren": [
         "error",
