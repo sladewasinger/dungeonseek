@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "createjs": "^1.0.1",
     "vue": "^3.2.13"
   },
   "devDependencies": {
@@ -37,7 +38,17 @@
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     },
-    "rules": {}
+    "rules": {
+      "no-unused-vars": "off",
+      "semi": [
+        "error",
+        "always"
+      ],
+      "space-before-function-paren": [
+        "error",
+        "never"
+      ]
+    }
   },
   "browserslist": [
     "> 1%",
