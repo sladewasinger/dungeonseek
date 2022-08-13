@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "start": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "core-js": "^3.8.3",
-    "createjs": "^1.0.1",
     "vue": "^3.2.13"
   },
   "devDependencies": {
@@ -45,8 +45,10 @@
         "never"
       ],
       "space-before-function-paren": [
-        "error",
-        "never"
+        "off"
+      ],
+      "vue/multi-word-component-names": [
+        "off"
       ]
     }
   },

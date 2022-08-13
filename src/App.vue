@@ -1,19 +1,25 @@
 <template>
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <Game />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue';
+import Game from './components/Game.vue';
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    Game
   }
 };
 </script>
 
 <style>
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
