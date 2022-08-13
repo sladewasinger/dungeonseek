@@ -4,8 +4,9 @@ const createjs = window.createjs;
 
 const circle = new createjs.Shape();
 const cameraContainer = new createjs.Container();
+cameraContainer.snapToPixel = true;
+cameraContainer.snapToPixelEnabled = true;
 const camera = {
-  zoom: 1,
   x: 0,
   y: 0,
   scale: 4
@@ -62,10 +63,11 @@ export function init() {
   window.addEventListener('resize', () => resize(stage.canvas));
   window.addEventListener('wheel', (event) => {
     if (event.deltaY > 0) {
-      camera.zoom *= 0.9;
+      camera.scale *= 0.9;
     } else {
-      camera.zoom *= 1.1;
+      camera.scale *= 1.1;
     }
+    resize(stage.canvas);
   });
   resize(stage.canvas);
 
@@ -76,16 +78,20 @@ export function init() {
   // stage.addChild(circle);
   cameraContainer.addChild(circle);
   stage.addChild(cameraContainer);
-  stage.update();
 
   loadImage(stage);
-
+  stage.update();
   window.requestAnimationFrame((dt) => loop(dt, stage));
 }
 
 function loop(dt, stage) {
+  const context = stage.canvas.getContext('2d');
+  context.imageSmoothingEnabled = false;
+
   stage.update();
-  cameraContainer.scale = camera.zoom;
+  cameraContainer.snapToPixel = true;
+  cameraContainer.snapToPixelEnabled = true;
+
   cameraContainer.x = camera.x;
   cameraContainer.y = camera.y;
   window.requestAnimationFrame((dt) => loop(dt, stage));
@@ -102,10 +108,9 @@ function handleFileComplete(event, stage) {
   bmp.x = 0;
   bmp.y = 0;
   bmp.z = 0;
-  stage.addChild(bmp);
-  stage.update();
+  cameraContainer.addChild(bmp);
   console.log('image loaded');
-  stage.setChildIndex(bmp, bmp.z);
+  cameraContainer.setChildIndex(bmp, bmp.z);
 }
 
 function resize(canvas) {
