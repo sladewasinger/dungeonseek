@@ -4,10 +4,12 @@ const createjs = window.createjs;
 
 const circle = new createjs.Shape();
 const cameraContainer = new createjs.Container();
-let zoom = 1;
-let posX = 0;
-let posY = 0;
-const scale = 4;
+const camera = {
+  zoom: 1,
+  x: 0,
+  y: 0,
+  scale: 4
+}
 
 class Pointer {
   constructor(threshold = 10) {
@@ -46,21 +48,11 @@ window.addEventListener('mousedown', (e) => pointer.mousedown(e))
 window.addEventListener('mouseup', (e) => pointer.mouseup(e))
 window.addEventListener('mousemove', (e) => {
   if (pointer.leftClick) {
-    posX += (e.clientX - pointer.x) / scale;
-    posY += (e.clientY - pointer.y) / scale;
+    camera.x += (e.clientX - pointer.x) / camera.scale;
+    camera.y += (e.clientY - pointer.y) / camera.scale;
   }
   pointer.mousemove(e);
 });
-// window.addEventListener('mouseup', (e) => {
-//   if (!pointer.isClick(e)) {
-//     console.log('not a click');
-//     console.log(e.clientX, e.clientY);
-//     console.log('pointer: ', pointer);
-//     posX += e.clientX - pointer.x;
-//     posY += e.clientY - pointer.y;
-//     console.log(posX, posY);
-//   }
-// })
 
 export function init() {
   const stage = new createjs.Stage('gameCanvas');
@@ -70,9 +62,9 @@ export function init() {
   window.addEventListener('resize', () => resize(stage.canvas));
   window.addEventListener('wheel', (event) => {
     if (event.deltaY > 0) {
-      zoom *= 0.9;
+      camera.zoom *= 0.9;
     } else {
-      zoom *= 1.1;
+      camera.zoom *= 1.1;
     }
   });
   resize(stage.canvas);
@@ -93,9 +85,9 @@ export function init() {
 
 function loop(dt, stage) {
   stage.update();
-  cameraContainer.scale = zoom;
-  cameraContainer.x = posX;
-  cameraContainer.y = posY;
+  cameraContainer.scale = camera.zoom;
+  cameraContainer.x = camera.x;
+  cameraContainer.y = camera.y;
   window.requestAnimationFrame((dt) => loop(dt, stage));
 }
 
@@ -117,6 +109,6 @@ function handleFileComplete(event, stage) {
 }
 
 function resize(canvas) {
-  canvas.width = window.innerWidth / scale;
-  canvas.height = window.innerHeight / scale;
+  canvas.width = window.innerWidth / camera.scale;
+  canvas.height = window.innerHeight / camera.scale;
 }
