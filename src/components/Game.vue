@@ -25,7 +25,7 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  pointer-events: none;
+  /* pointer-events: none; */
   image-rendering: pixelated;
 }
 

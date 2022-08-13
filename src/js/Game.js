@@ -3,6 +3,64 @@ import tileset from '@/assets/tiles/dungeonTileset.png';
 const createjs = window.createjs;
 
 const circle = new createjs.Shape();
+const cameraContainer = new createjs.Container();
+let zoom = 1;
+let posX = 0;
+let posY = 0;
+const scale = 4;
+
+class Pointer {
+  constructor(threshold = 10) {
+    this.threshold = threshold;
+    this.x = 0;
+    this.y = 0;
+    this.leftClick = false;
+  }
+
+  mousedown(e) {
+    this.leftClick = true;
+    this.x = e.clientX;
+    this.y = e.clientY;
+  }
+
+  mousemove(e) {
+    this.x = e.clientX;
+    this.y = e.clientY;
+  }
+
+  mouseup(e) {
+    this.leftClick = false;
+  }
+
+  isClick(e) {
+    console.log('isclick: ', this.x, this.y);
+    const deltaX = Math.abs(e.clientX - this.x);
+    const deltaY = Math.abs(e.clientY - this.y);
+    return deltaX < this.threshold && deltaY < this.threshold;
+  }
+}
+
+const pointer = new Pointer();
+
+window.addEventListener('mousedown', (e) => pointer.mousedown(e))
+window.addEventListener('mouseup', (e) => pointer.mouseup(e))
+window.addEventListener('mousemove', (e) => {
+  if (pointer.leftClick) {
+    posX += (e.clientX - pointer.x) / scale;
+    posY += (e.clientY - pointer.y) / scale;
+  }
+  pointer.mousemove(e);
+});
+// window.addEventListener('mouseup', (e) => {
+//   if (!pointer.isClick(e)) {
+//     console.log('not a click');
+//     console.log(e.clientX, e.clientY);
+//     console.log('pointer: ', pointer);
+//     posX += e.clientX - pointer.x;
+//     posY += e.clientY - pointer.y;
+//     console.log(posX, posY);
+//   }
+// })
 
 export function init() {
   const stage = new createjs.Stage('gameCanvas');
@@ -10,17 +68,24 @@ export function init() {
   stage.snapToPixelEnabled = true;
 
   window.addEventListener('resize', () => resize(stage.canvas));
+  window.addEventListener('wheel', (event) => {
+    if (event.deltaY > 0) {
+      zoom *= 0.9;
+    } else {
+      zoom *= 1.1;
+    }
+  });
   resize(stage.canvas);
-
-  const cameraContainer = new createjs.Container();
 
   circle.graphics.beginFill('DeepSkyBlue').drawCircle(0, 0, 50);
   circle.x = 10;
   circle.y = 10;
   circle.z = 100;
-  stage.addChild(circle);
-  // cameraContainer.addChild(circle);
+  // stage.addChild(circle);
+  cameraContainer.addChild(circle);
+  stage.addChild(cameraContainer);
   stage.update();
+
   loadImage(stage);
 
   window.requestAnimationFrame((dt) => loop(dt, stage));
@@ -28,6 +93,9 @@ export function init() {
 
 function loop(dt, stage) {
   stage.update();
+  cameraContainer.scale = zoom;
+  cameraContainer.x = posX;
+  cameraContainer.y = posY;
   window.requestAnimationFrame((dt) => loop(dt, stage));
 }
 
@@ -49,7 +117,6 @@ function handleFileComplete(event, stage) {
 }
 
 function resize(canvas) {
-  const scale = 4;
   canvas.width = window.innerWidth / scale;
   canvas.height = window.innerHeight / scale;
 }
