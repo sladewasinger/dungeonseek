@@ -1,6 +1,6 @@
 <template>
   <p>Game template</p>
-  <canvas id="gameCanvas" width="500" height="500"></canvas>
+  <canvas id="gameCanvas" width="100" height="100"></canvas>
 </template>
 
 <script>
@@ -26,6 +26,7 @@ export default {
   top: 0;
   left: 0;
   pointer-events: none;
+  image-rendering: pixelated;
 }
 
 h3 {
