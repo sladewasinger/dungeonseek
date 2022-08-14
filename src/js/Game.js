@@ -2,52 +2,16 @@ import { Tilemap } from './Tilemap.js';
 import tileset from '@/assets/tiles/dungeonTileset.png';
 import { GridDrawer } from './GridDrawer.js';
 import { DungeonTileset } from './DungeonTileset.js';
-const createjs = window.createjs;
+import { Point, Rectangle } from './Shapes.js';
+import { MousePointer } from './MousePointer';
+import { Camera } from './Camera';
+import { Engine } from './Engine.js';
 
-const cameraContainer = new createjs.Container();
-// cameraContainer.snapToPixel = true;
-// cameraContainer.snapToPixelEnabled = true;
-const camera = {
-  x: 0,
-  y: 0,
-  scale: 1
-}
+export const createjs = window.createjs;
 
-class Pointer {
-  constructor(threshold = 10) {
-    this.threshold = threshold;
-    this.x = 0;
-    this.y = 0;
-    this.canvasX = 0;
-    this.canvasY = 0;
-    this.leftClick = false;
-  }
+const camera = new Camera();
 
-  mousedown(e) {
-    this.leftClick = true;
-  }
-
-  mousemove(e) {
-    this.x = e.clientX;
-    this.y = e.clientY;
-
-    this.canvasX = this.x / camera.scale - camera.x;
-    this.canvasY = this.y / camera.scale - camera.y;
-  }
-
-  mouseup(e) {
-    this.leftClick = false;
-  }
-
-  isClick(e) {
-    console.log('isclick: ', this.x, this.y);
-    const deltaX = Math.abs(e.clientX - this.x);
-    const deltaY = Math.abs(e.clientY - this.y);
-    return deltaX < this.threshold && deltaY < this.threshold;
-  }
-}
-
-const pointer = new Pointer();
+const pointer = new MousePointer(camera);
 
 window.addEventListener('mousedown', (e) => pointer.mousedown(e))
 window.addEventListener('mouseup', (e) => pointer.mouseup(e))
@@ -67,7 +31,9 @@ function handleFileLoad(event) {
 
 let spriteSheet;
 let bigDemon;
-function handleComplete() {
+function handleComplete(event) {
+  console.log(event);
+
   for (let i = 0; i < assets.length; i++) {
     const event = assets[i];
     const result = event.result;
@@ -89,10 +55,10 @@ function handleComplete() {
 let demon = null;
 function initScene() {
   const container = new createjs.Container();
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 25; i++) {
     const floor = new createjs.Sprite(spriteSheet, 'wall_mid');
     floor.x = i * 16;
-    floor.y = 8;
+    floor.y = 100;
     container.addChild(floor);
   }
   demon = new createjs.Sprite(bigDemon, 'big_demon_idle_anim');
@@ -110,11 +76,16 @@ function initScene() {
   demon.x = 50;
   demon.y = 50;
   container.addChild(demon);
-  cameraContainer.addChild(container);
+  camera.container.addChild(container);
+}
+
+export function init() {
+  const engine = new Engine();
+  engine.init();
 }
 
 let stage = null;
-export function init() {
+export function initOld() {
   stage = new createjs.Stage('gameCanvas');
   stage.snapToPixel = true;
   stage.snapToPixelEnabled = true;
@@ -130,7 +101,7 @@ export function init() {
   });
   resize(stage.canvas);
 
-  stage.addChild(cameraContainer);
+  stage.addChild(camera.container);
 
   const manifest = [
     { src: 'media/dungeon_tiles/dungeonTileset.json', id: 'sheet1', type: 'spritesheet' },
@@ -152,11 +123,11 @@ export function init() {
 
 function loop(event, stage) {
   stage.update(event);
-  cameraContainer.snapToPixel = true;
-  cameraContainer.snapToPixelEnabled = true;
+  camera.container.snapToPixel = true;
+  camera.container.snapToPixelEnabled = true;
 
-  cameraContainer.x = camera.x;
-  cameraContainer.y = camera.y;
+  camera.container.x = camera.x;
+  camera.container.y = camera.y;
 
   if (demon != null) {
     demon.x = pointer.canvasX;
@@ -177,12 +148,12 @@ function handleFileComplete(event, stage) {
   bmp.x = 0;
   bmp.y = 0;
   bmp.z = 0;
-  // cameraContainer.addChild(bmp);
+  // camera.container.addChild(bmp);
   console.log('image loaded');
-  cameraContainer.setChildIndex(bmp, bmp.z);
+  camera.container.setChildIndex(bmp, bmp.z);
 
   console.log(bmp);
-  const gridDrawer = new GridDrawer(stage, cameraContainer, 16, bmp.image.width, bmp.image.height);
+  const gridDrawer = new GridDrawer(stage, camera.container, 16, bmp.image.width, bmp.image.height);
   const dungeonTileset = new DungeonTileset(16, bmp);
 
   const data = {
@@ -192,7 +163,7 @@ function handleFileComplete(event, stage) {
     }
   };
   const spriteSheet = new createjs.SpriteSheet(data);
-  // cameraContainer.addChild(spriteSheet);
+  // camera.container.addChild(spriteSheet);
 }
 
 function resize(canvas) {
