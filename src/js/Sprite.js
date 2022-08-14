@@ -14,8 +14,21 @@ export class Sprite extends createjs.Sprite {
     this.x = 50;
     this.y = 50;
 
+    this.rect = new createjs.Shape();
+    this.rect.graphics
+      .beginStroke('#0a0')
+      .setStrokeStyle(1)
+      .drawRect(this.x, this.y, this.width, this.height)
+      .endStroke();
+    this.container.addChild(this.rect);
+
     this.velocity = new Point(0, 0);
     this.gravity = true;
+  }
+
+  update() {
+    this.rect.x = this.x - this.width / 2;
+    this.rect.y = this.y - this.height / 2;
   }
 }
 

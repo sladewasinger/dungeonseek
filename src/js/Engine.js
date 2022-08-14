@@ -66,6 +66,8 @@ export class Engine {
 
     for (let i = 0; i < this.sprites.length; i++) {
       const sprite = this.sprites[i];
+      sprite.update();
+
       if (sprite.gravity) {
         sprite.velocity.y += gravity;
       }
@@ -165,7 +167,6 @@ export class Engine {
             .drawRect(this.playerSprite.x, this.playerSprite.y, this.playerSprite.width, this.playerSprite.height)
             .endStroke();
           this.camera.container.addChild(rect);
-          this.playerSprite.gravity = false;
           break;
       }
     }
