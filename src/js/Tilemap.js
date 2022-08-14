@@ -1,16 +1,18 @@
-export class Tilemap {
-  constructor() {
+export class TileAtlas {
+  constructor(tileSize, atlasImage) {
+    this.tileSize = tileSize;
+    this.atlasImage = atlasImage;
+    this.width = atlasImage.image.width;
+    this.height = atlasImage.image.height;
     this.tiles = [];
-    this.width = 0;
-    this.height = 0;
-    console.log('TILE MAP');
   }
 }
 
 export class Tile {
-  constructor(x, y, type) {
+  constructor(tilemap, x, y, index) {
+    this.tilemap = tilemap;
     this.x = x;
     this.y = y;
-    this.type = type;
+    this.index = index;
   }
 }
