@@ -95,8 +95,10 @@ function initScene() {
   let run = true;
   setInterval(() => {
     if (run) {
+      demon.scaleX = -1;
       demon.gotoAndPlay('big_demon_run_anim');
     } else {
+      demon.scaleX = 1;
       demon.gotoAndPlay('big_demon_idle_anim');
     }
     run = !run;
@@ -128,7 +130,7 @@ export function init() {
 
   const manifest = [
     { src: 'media/dungeon_tiles/dungeonTileset.json', id: 'sheet1', type: 'spritesheet' },
-    { src: 'media/dungeon_tiles/bigDemon.json', id: 'bigDemon', type: 'spritesheet' }
+    { src: 'media/dungeon_tiles/demon2.json', id: 'bigDemon', type: 'spritesheet' }
   ];
 
   const loader = new createjs.LoadQueue(true, './');
