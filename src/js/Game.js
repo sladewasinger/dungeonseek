@@ -92,6 +92,15 @@ function initScene() {
     container.addChild(floor);
   }
   const demon = new createjs.Sprite(bigDemon, 'big_demon_idle_anim');
+  let run = true;
+  setInterval(() => {
+    if (run) {
+      demon.gotoAndPlay('big_demon_run_anim');
+    } else {
+      demon.gotoAndPlay('big_demon_idle_anim');
+    }
+    run = !run;
+  }, 2000);
   demon.x = 50;
   demon.y = 50;
   container.addChild(demon);
