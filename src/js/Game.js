@@ -18,18 +18,21 @@ class Pointer {
     this.threshold = threshold;
     this.x = 0;
     this.y = 0;
+    this.canvasX = 0;
+    this.canvasY = 0;
     this.leftClick = false;
   }
 
   mousedown(e) {
     this.leftClick = true;
-    this.x = e.clientX;
-    this.y = e.clientY;
   }
 
   mousemove(e) {
     this.x = e.clientX;
     this.y = e.clientY;
+
+    this.canvasX = this.x / camera.scale - camera.x;
+    this.canvasY = this.y / camera.scale - camera.y;
   }
 
   mouseup(e) {
@@ -83,6 +86,7 @@ function handleComplete() {
   initScene();
 }
 
+let demon = null;
 function initScene() {
   const container = new createjs.Container();
   for (let i = 0; i < 5; i++) {
@@ -91,9 +95,10 @@ function initScene() {
     floor.y = 8;
     container.addChild(floor);
   }
-  const demon = new createjs.Sprite(bigDemon, 'big_demon_idle_anim');
-  let run = true;
+  demon = new createjs.Sprite(bigDemon, 'big_demon_idle_anim');
+  let run = false;
   setInterval(() => {
+    run = !run;
     if (run) {
       demon.scaleX = -1;
       demon.gotoAndPlay('big_demon_run_anim');
@@ -101,7 +106,6 @@ function initScene() {
       demon.scaleX = 1;
       demon.gotoAndPlay('big_demon_idle_anim');
     }
-    run = !run;
   }, 2000);
   demon.x = 50;
   demon.y = 50;
@@ -153,6 +157,12 @@ function loop(event, stage) {
 
   cameraContainer.x = camera.x;
   cameraContainer.y = camera.y;
+
+  if (demon != null) {
+    demon.x = pointer.canvasX;
+    demon.y = pointer.canvasY
+  }
+
   // window.requestAnimationFrame((dt) => loop(dt, stage));
 }
 
