@@ -124,7 +124,7 @@
             <key>json</key>
             <struct type="DataFile">
                 <key>name</key>
-                <filename>../tiles/dungeonTileset/dungeonTileset.json</filename>
+                <filename>../../../src/assets/dungeon_tiles/dungeonTileset.json</filename>
             </struct>
         </map>
         <key>multiPack</key>

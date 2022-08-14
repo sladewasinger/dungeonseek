@@ -63,7 +63,7 @@ function handleFileLoad(event) {
 }
 
 let spriteSheet;
-
+let bigDemon;
 function handleComplete() {
   for (let i = 0; i < assets.length; i++) {
     const event = assets[i];
@@ -74,6 +74,9 @@ function handleComplete() {
       case 'sheet1':
         spriteSheet = result;
         break;
+      case 'bigDemon':
+        bigDemon = result;
+        break;
     }
   }
 
@@ -82,17 +85,17 @@ function handleComplete() {
 
 function initScene() {
   const container = new createjs.Container();
-
   for (let i = 0; i < 5; i++) {
     const floor = new createjs.Sprite(spriteSheet, 'wall_mid');
     floor.x = i * 16;
     floor.y = 8;
     container.addChild(floor);
   }
+  const demon = new createjs.Sprite(bigDemon, 'big_demon_idle_anim');
+  demon.x = 50;
+  demon.y = 50;
+  container.addChild(demon);
   cameraContainer.addChild(container);
-  setTimeout(() => cameraContainer.removeChild(container), 2000);
-  createjs.Ticker.timingMode = createjs.Ticker.RAF;
-  createjs.Ticker.addEventListener('tick', stage);
 }
 
 let stage = null;
@@ -115,7 +118,8 @@ export function init() {
   stage.addChild(cameraContainer);
 
   const manifest = [
-    { src: 'media/dungeon_tiles/dungeonTileset.json', id: 'sheet1', type: 'spritesheet' }
+    { src: 'media/dungeon_tiles/dungeonTileset.json', id: 'sheet1', type: 'spritesheet' },
+    { src: 'media/dungeon_tiles/bigDemon.json', id: 'bigDemon', type: 'spritesheet' }
   ];
 
   const loader = new createjs.LoadQueue(true, './');
@@ -127,6 +131,7 @@ export function init() {
   // window.requestAnimationFrame((dt) => loop(dt, stage));
   const context = stage.canvas.getContext('2d');
   context.imageSmoothingEnabled = false;
+  createjs.Ticker.timingMode = createjs.Ticker.RAF;
   createjs.Ticker.on('tick', (event) => loop(event, stage));
 }
 
