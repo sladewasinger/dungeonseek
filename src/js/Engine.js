@@ -24,6 +24,7 @@ export class Engine {
     this.sprites = [];
     this.keyMap = {};
     this.canJump = true;
+    this.lastUpdatedTimeMs = 0;
 
     this.stage = new createjs.Stage('gameCanvas');
     this.stage.snapToPixel = true;
@@ -52,20 +53,22 @@ export class Engine {
   }
 
   update(event) {
+    const dt = event.delta / (1000 / 120);
+
     if (this.keyMap.ArrowUp && this.canJump) {
       this.playerSprite.velocity.y = -2;
       this.canJump = false;
     }
     if (this.keyMap.ArrowDown) {
-      this.playerSprite.velocity.y = 1;
+      this.playerSprite.velocity.y = 2;
     }
     if (this.keyMap.ArrowLeft) {
       this.playerSprite.scaleX = -1;
-      this.playerSprite.velocity.x = -0.5;
+      this.playerSprite.velocity.x = -1;
     }
     if (this.keyMap.ArrowRight) {
       this.playerSprite.scaleX = 1;
-      this.playerSprite.velocity.x = 0.5;
+      this.playerSprite.velocity.x = 1;
     }
 
     for (let i = 0; i < this.sprites.length; i++) {
@@ -73,9 +76,9 @@ export class Engine {
       sprite.update();
 
       if (sprite.gravity) {
-        sprite.velocity.y += gravity;
+        sprite.velocity.y += gravity * dt;
       }
-      sprite.velocity.x *= friction;
+      sprite.velocity.x *= friction * dt;
       let overlapX = false;
       let overlapY = false;
 
@@ -107,13 +110,13 @@ export class Engine {
 
       /* TODO: Figure out point of collision and adjust position accordingly */
       if (!overlapX) {
-        sprite.x += sprite.velocity.x;
+        sprite.x += sprite.velocity.x * dt;
       } else {
         sprite.velocity.x = 0;
       }
 
       if (!overlapY) {
-        sprite.y += sprite.velocity.y;
+        sprite.y += sprite.velocity.y * dt;
       } else {
         sprite.velocity.y = 0;
       }
