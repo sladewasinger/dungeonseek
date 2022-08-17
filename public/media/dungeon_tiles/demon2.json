@@ -16,10 +16,5 @@
   "animations": {
     "big_demon_idle_anim": { "frames": [0, 1, 2, 3] },
     "big_demon_run_anim": { "frames": [4, 5, 6, 7] }
-  },
-
-  "texturepacker": [
-    "SmartUpdateHash: $TexturePacker:SmartUpdate:02d70779f25dd9311311bec8621c5746:1a6693d8ed4217ef1f04e394634274a0:2de57ff892187906da6a7dae3f8927b3$",
-    "Created with TexturePacker (https://www.codeandweb.com/texturepacker) for EaselJS"
-  ]
+  }
 }

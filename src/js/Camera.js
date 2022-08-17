@@ -1,10 +1,10 @@
 const createjs = window.createjs;
 
 export class Camera {
-  constructor() {
-    this.x = 0;
-    this.y = 0;
-    this.scale = 4;
+  constructor(x = 0, y = 0, scale = 4) {
+    this.x = x;
+    this.y = y;
+    this.scale = scale;
     this.container = new createjs.Container();
   }
 

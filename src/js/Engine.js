@@ -16,7 +16,7 @@ const manifest = [
 
 export class Engine {
   constructor() {
-    this.camera = new Camera();
+    this.camera = new Camera(0, 0, 3);
     this.pointer = new MousePointer(this.camera);
     this.assets = [];
     this.spriteSheet = null;
@@ -85,9 +85,9 @@ export class Engine {
         }
 
         const spritej = this.sprites[j];
-        const newPosX = new Rectangle(sprite.x + sprite.velocity.x, sprite.y, sprite.width, sprite.height);
-        const newPosY = new Rectangle(sprite.x, sprite.y + sprite.velocity.y, sprite.width, sprite.height);
-        const posJ = new Rectangle(spritej.x, spritej.y, spritej.width, spritej.height);
+        const newPosX = new Rectangle(sprite.x + sprite.velocity.x - sprite.width / 2, sprite.y - sprite.height / 2, sprite.width, sprite.height);
+        const newPosY = new Rectangle(sprite.x - sprite.width / 2, sprite.y + sprite.velocity.y - sprite.height / 2, sprite.width, sprite.height);
+        const posJ = new Rectangle(spritej.x - spritej.width / 2, spritej.y - spritej.height / 2, spritej.width, spritej.height);
 
         if (RectangleCollision.checkOverlap(newPosX, posJ)) {
           overlapX = true;
@@ -155,18 +155,10 @@ export class Engine {
           this.spriteSheet = result;
           break;
         case demonSrc.id:
-          this.playerSprite = new PlayerSprite(result, 'big_demon_idle_anim', this.camera.container, 16, 16);
+          this.playerSprite = new PlayerSprite(result, 'big_demon_idle_anim', this.camera.container, 18, 26, 0, 6);
           this.playerSprite.x = 100;
           this.playerSprite.y = 40;
           this.sprites.push(this.playerSprite);
-
-          const rect = new createjs.Shape();
-          rect.graphics
-            .beginStroke('#0a0')
-            .setStrokeStyle(1)
-            .drawRect(this.playerSprite.x, this.playerSprite.y, this.playerSprite.width, this.playerSprite.height)
-            .endStroke();
-          this.camera.container.addChild(rect);
           break;
       }
     }
