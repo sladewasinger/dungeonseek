@@ -23,6 +23,7 @@ export class Engine {
     this.player = null;
     this.sprites = [];
     this.keyMap = {};
+    this.canJump = true;
 
     this.stage = new createjs.Stage('gameCanvas');
     this.stage.snapToPixel = true;
@@ -51,16 +52,19 @@ export class Engine {
   }
 
   update(event) {
-    if (this.keyMap.ArrowUp) {
-      this.playerSprite.velocity.y = -1;
+    if (this.keyMap.ArrowUp && this.canJump) {
+      this.playerSprite.velocity.y = -2;
+      this.canJump = false;
     }
     if (this.keyMap.ArrowDown) {
       this.playerSprite.velocity.y = 1;
     }
     if (this.keyMap.ArrowLeft) {
+      this.playerSprite.scaleX = -1;
       this.playerSprite.velocity.x = -0.5;
     }
     if (this.keyMap.ArrowRight) {
+      this.playerSprite.scaleX = 1;
       this.playerSprite.velocity.x = 0.5;
     }
 
@@ -95,6 +99,9 @@ export class Engine {
 
         if (RectangleCollision.checkOverlap(newPosY, posJ)) {
           overlapY = true;
+          if (sprite === this.playerSprite) {
+            this.canJump = true;
+          }
         }
       }
 
