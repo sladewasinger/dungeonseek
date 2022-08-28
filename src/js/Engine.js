@@ -1,6 +1,6 @@
 import { MousePointer } from './MousePointer';
 import { Camera } from './Camera';
-import { Sprite, PlayerSprite } from './Sprite';
+import { Sprite, PlayerSprite, WallTopMid } from './Sprite';
 import { RectangleCollision } from './Collision';
 import { Rectangle } from './Shapes';
 import { gravity, friction } from './Constants.js';
@@ -16,10 +16,11 @@ const manifest = [
 
 export class Engine {
   constructor() {
-    this.camera = new Camera(0, 0, 3);
+    this.camera = new Camera(0, 0, 2);
     this.pointer = new MousePointer(this.camera);
     this.assets = [];
     this.spriteSheet = null;
+    this.playerSpriteSheet = null;
     this.player = null;
     this.sprites = [];
     this.keyMap = {};
@@ -50,6 +51,33 @@ export class Engine {
     loader.loadManifest(manifest);
 
     this.i = 0;
+  }
+
+  handleFileLoad(event) {
+    this.assets.push(event);
+  }
+
+  handleComplete(event) {
+    for (let i = 0; i < this.assets.length; i++) {
+      const event = this.assets[i];
+      const result = event.result;
+
+      switch (event.item.id) {
+        case dungeonSheetSrc.id:
+          this.spriteSheet = result;
+          break;
+        case demonSrc.id:
+          this.playerSpriteSheet = result;
+          break;
+      }
+    }
+
+    this.initScene();
+  }
+
+  resizeCanvas() {
+    this.stage.canvas.width = window.innerWidth / this.camera.scale;
+    this.stage.canvas.height = window.innerHeight / this.camera.scale;
   }
 
   update(event) {
@@ -132,16 +160,19 @@ export class Engine {
     this.resizeCanvas();
 
     createjs.Ticker.timingMode = createjs.Ticker.RAF;
-    createjs.Ticker.on('tick', this.update.bind(this));
+    createjs.Ticker.on('tick', (e) => this.update(e));
   }
 
   initScene() {
+    const grid = [];
+    const cellSize = 32;
+
     for (let i = 0; i < 25; i++) {
-      const floor = new Sprite(this.spriteSheet, 'wall_mid', this.camera.container, 16, 16);
-      floor.x = i * 16;
-      floor.y = 100;
-      floor.gravity = false;
-      this.sprites.push(floor);
+      const wallTopMid = new WallTopMid(this.spriteSheet, this.camera.container, 16, 16);
+      wallTopMid.x = Math.random(0) * 500;
+      wallTopMid.y = Math.random(0) * 500;
+      wallTopMid.gravity = false;
+      this.sprites.push(wallTopMid);
     }
 
     const floor = new Sprite(this.spriteSheet, 'wall_mid', this.camera.container, 16, 16);
@@ -149,35 +180,10 @@ export class Engine {
     floor.y = 75;
     floor.gravity = false;
     this.sprites.push(floor);
-  }
 
-  handleFileLoad(event) {
-    this.assets.push(event);
-  }
-
-  handleComplete(event) {
-    for (let i = 0; i < this.assets.length; i++) {
-      const event = this.assets[i];
-      const result = event.result;
-
-      switch (event.item.id) {
-        case dungeonSheetSrc.id:
-          this.spriteSheet = result;
-          break;
-        case demonSrc.id:
-          this.playerSprite = new PlayerSprite(result, 'big_demon_idle_anim', this.camera.container, 18, 26, 0, 6);
-          this.playerSprite.x = 100;
-          this.playerSprite.y = 40;
-          this.sprites.push(this.playerSprite);
-          break;
-      }
-    }
-
-    this.initScene();
-  }
-
-  resizeCanvas() {
-    this.stage.canvas.width = window.innerWidth / this.camera.scale;
-    this.stage.canvas.height = window.innerHeight / this.camera.scale;
+    this.playerSprite = new PlayerSprite(this.playerSpriteSheet, 'big_demon_idle_anim', this.camera.container, 18, 26, 0, 5);
+    this.playerSprite.x = 100;
+    this.playerSprite.y = 40;
+    this.sprites.push(this.playerSprite);
   }
 }
